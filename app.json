@@ -1,0 +1,12 @@
+{
+  "name": "pocNative",
+  "displayName": "pocNative",
+  "expo": {
+    "name": "pocNative",
+    "slug": "pocNative",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
