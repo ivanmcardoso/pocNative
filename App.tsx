@@ -1,10 +1,19 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import ImgView from './RTCImageViewer'
+import {TesteModule} from './TesteModule'
 
 export default function App() {
+
+  const reff = useRef(null)
+
   return (
     <View style={styles.container}>
       <Text>Open up App.tsx to start working on your app!</Text>
+      <ImgView />
+      <Button title="buton" onPress={()=>{
+        TesteModule.abreAi()
+      }}/>
     </View>
   );
 }
