@@ -15,9 +15,11 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -35,12 +37,13 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nonnull;
 
-public class TesteModule extends ReactContextBaseJavaModule {
+public class TesteModule extends ReactContextBaseJavaModule implements LifecycleEventListener, LifecycleOwner {
 
     private LifecycleRegistry lifecycleRegistry;
 
     public TesteModule(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
+        reactContext.addLifecycleEventListener(this);
     }
 
     @NonNull
@@ -48,6 +51,8 @@ public class TesteModule extends ReactContextBaseJavaModule {
     public String getName() {
         return "TesteModule";
     }
+
+
 
     @ReactMethod
     public void abreAi(){
@@ -59,8 +64,8 @@ public class TesteModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void startCamera(final int viewTag, final Promise promise) {
         final ReactApplicationContext context = getReactApplicationContext();
+        AppCompatActivity  activity = (AppCompatActivity) context.getCurrentActivity();
         UIManagerModule uiManager = context.getNativeModule(UIManagerModule.class);
-        AppCompatActivity activity = (AppCompatActivity) getCurrentActivity();
 
         uiManager.addUIBlock(nativeViewHierarchyManager -> {
             PreviewView previewView = (PreviewView) nativeViewHierarchyManager.resolveView(viewTag);
@@ -78,9 +83,7 @@ public class TesteModule extends ReactContextBaseJavaModule {
                 }
 
                 try {
-                    CameraSelector cameraSelector =  new CameraSelector.Builder()
-                            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                            .build();
+                    CameraSelector cameraSelector =  CameraSelector.DEFAULT_FRONT_CAMERA;
 
                     Preview preview = new Preview.Builder().build();
                     preview.setSurfaceProvider(previewView.createSurfaceProvider());
@@ -93,6 +96,7 @@ public class TesteModule extends ReactContextBaseJavaModule {
                         cameraProvider.unbindAll();
 
                         // Bind use cases to camera
+                        AppCompatActivity appCompatActivity = new TesteActivity();
                         Camera camera = cameraProvider.bindToLifecycle(
                                 activity, cameraSelector, preview);
                         promise.resolve(camera.toString());
@@ -111,4 +115,24 @@ public class TesteModule extends ReactContextBaseJavaModule {
             });
     }
 
+    @Override
+    public void onHostResume() {
+        Log.e("ERR", "Resume mod");
+    }
+
+    @Override
+    public void onHostPause() {
+
+    }
+
+    @Override
+    public void onHostDestroy() {
+
+    }
+
+    @NonNull
+    @Override
+    public Lifecycle getLifecycle() {
+        return new LifecycleRegistry(this);
+    }
 }

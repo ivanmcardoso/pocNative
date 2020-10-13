@@ -16,6 +16,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
+import com.facebook.react.ReactActivity;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.UIManagerModule;
@@ -23,7 +24,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.concurrent.ExecutionException;
 
-public class TesteActivity extends AppCompatActivity {
+public class TesteActivity extends ReactActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +71,7 @@ public class TesteActivity extends AppCompatActivity {
                         // Bind use cases to camera
                         Camera camera = cameraProvider.bindToLifecycle(
                                 this, cameraSelector, preview);
+                        Log.e("TAG", camera.toString());
 
                     } catch(Exception exc) {
                         Log.e("TAG", "Use case binding failed", exc);
